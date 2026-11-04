@@ -29,7 +29,7 @@
   <script>
     const map = L.map("map").setView([4.65, -74.08], 11);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19, attribution: "&copy; OpenStreetMap"
+      maxZoom: 19, referrerPolicy: "strict-origin-when-cross-origin", attribution: "&copy; OpenStreetMap"
     }).addTo(map);
     const layer = L.layerGroup().addTo(map);
     const status = document.getElementById("status");
