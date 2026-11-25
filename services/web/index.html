@@ -7,21 +7,31 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     body { margin: 0; font-family: system-ui, sans-serif; }
-    header { padding: 12px 16px; }
+    header { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
     h1 { font-size: 20px; margin: 0 0 4px; }
     p { margin: 0; color: #444; }
-    #map { height: calc(100vh - 110px); }
+    #locate {
+      min-height: 44px; padding: 0 18px; border: 0; border-radius: 22px;
+      background: #24128F; color: #fff; font: 600 15px system-ui, sans-serif; cursor: pointer;
+    }
+    #locate:hover { background: #3A1FB0; }
+    #locate:disabled { background: #8B86B8; cursor: wait; }
+    #locate:focus-visible { outline: 3px solid #F5A623; outline-offset: 2px; }
+    #map { height: calc(100vh - 120px); }
     footer { padding: 8px 16px; font-size: 13px; }
   </style>
 </head>
 <body>
   <header>
-    <h1>Mapa de celdas de Colombia</h1>
-    <p id="status">Haz clic en el mapa para ver las celdas en un radio de 2 km.</p>
+    <div>
+      <h1>Mapa de celdas de Colombia</h1>
+      <p id="status" aria-live="polite">Haz clic en el mapa o usa «Mi ubicación» para ver las celdas en un radio de 2 km.</p>
+    </div>
+    <button id="locate" type="button">Mi ubicación</button>
   </header>
   <div id="map"></div>
   <footer>
-    Las ubicaciones son estimadas, no torres confirmadas.
+    Las ubicaciones de las celdas son estimadas, no torres confirmadas. Tu ubicación solo se usa en tu navegador para buscar celdas cercanas; no se guarda.
     Cell tower data from <a href="https://opencellid.org">OpenCellID</a>,
     licensed under <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
   </footer>
@@ -32,22 +42,61 @@
       maxZoom: 19, referrerPolicy: "strict-origin-when-cross-origin", attribution: "&copy; OpenStreetMap"
     }).addTo(map);
     const layer = L.layerGroup().addTo(map);
+    const meLayer = L.layerGroup().addTo(map);
     const status = document.getElementById("status");
+    const locateButton = document.getElementById("locate");
 
-    map.on("click", async ({ latlng }) => {
-      status.textContent = "Buscando...";
+    async function loadNearby(lat, lon, prefix = "") {
+      status.textContent = "Buscando celdas...";
       layer.clearLayers();
-      const params = new URLSearchParams({ lat: latlng.lat, lon: latlng.lng, radius_m: 2000 });
+      const params = new URLSearchParams({ lat, lon, radius_m: 2000 });
       try {
         const response = await fetch(`/api/v1/cells/nearby?${params}`);
         if (!response.ok) throw new Error();
         const data = await response.json();
         data.cells.forEach(c => L.circleMarker([c.lat, c.lon], { radius: 5 })
           .bindPopup(`${c.radio} · red ${c.net} · alcance ${c.range_m} m`).addTo(layer));
-        status.textContent = `${data.count} celdas encontradas.`;
+        status.textContent = data.count
+          ? `${prefix}${data.count} celdas encontradas.`
+          : `${prefix}No hay celdas registradas a 2 km. Los datos cubren Colombia.`;
       } catch {
         status.textContent = "La API no respondió. Intenta otra vez.";
       }
+    }
+
+    map.on("click", ({ latlng }) => loadNearby(latlng.lat, latlng.lng));
+
+    const geoErrors = {
+      1: "No diste permiso para usar tu ubicación. Actívalo en el candado de la barra de direcciones.",
+      2: "No fue posible obtener tu ubicación. Revisa que el GPS o la ubicación estén activos.",
+      3: "Tu ubicación tardó demasiado. Intenta otra vez.",
+    };
+
+    locateButton.addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        status.textContent = "Este navegador no permite obtener la ubicación.";
+        return;
+      }
+      locateButton.disabled = true;
+      status.textContent = "Obteniendo tu ubicación...";
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          locateButton.disabled = false;
+          const point = [coords.latitude, coords.longitude];
+          const accuracy = Math.round(coords.accuracy);
+          meLayer.clearLayers();
+          L.circle(point, { radius: coords.accuracy, color: "#D9480F", weight: 1, fillOpacity: 0.12 }).addTo(meLayer);
+          L.circleMarker(point, { radius: 9, color: "#ffffff", weight: 3, fillColor: "#D9480F", fillOpacity: 1 })
+            .bindPopup(`Estás aquí (precisión aproximada: ${accuracy} m)`).addTo(meLayer).openPopup();
+          map.setView(point, 15);
+          loadNearby(coords.latitude, coords.longitude, `Ubicación encontrada (±${accuracy} m). `);
+        },
+        (error) => {
+          locateButton.disabled = false;
+          status.textContent = geoErrors[error.code] || geoErrors[2];
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+      );
     });
   </script>
 </body>

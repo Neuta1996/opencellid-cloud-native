@@ -4,7 +4,24 @@
 **Profesor:** Luis Fernando González De La Calle  
 **Integrantes:** Duarte, Garzón, Rodríguez y Vásquez
 
-**Aplicación en Azure:** https://ca-web.grayplant-212e438e.northcentralus.azurecontainerapps.io
+## Accesos y entregables
+
+| Entregable | Enlace |
+|---|---|
+| Aplicación en Azure | https://ca-web.grayplant-212e438e.northcentralus.azurecontainerapps.io |
+| Código fuente | https://github.com/Neuta1996/opencellid-cloud-native |
+| Ejecuciones de CI/CD | https://github.com/Neuta1996/opencellid-cloud-native/actions |
+| Registro de funcionamiento | [docs/evidencia/registro-funcionamiento.md](docs/evidencia/registro-funcionamiento.md) |
+
+La aplicación responde cuando la base de datos está encendida; se apaga fuera de las revisiones para ahorrar crédito.
+
+## Documentación
+
+1. [Arquitectura](docs/01-arquitectura.md): diagramas con íconos estándar, componentes y flujos.
+2. [Guía de despliegue](docs/02-despliegue.md): local, Kubernetes, Azure con Terraform y CI/CD.
+3. [API](docs/03-api.md): endpoints, ejemplos y pruebas.
+4. [Accesos, operación y registro de funcionamiento](docs/04-operacion-y-evidencias.md): evidencias, resultados y costos.
+5. [Uso y manejo de la IA](docs/05-uso-de-ia.md): cómo se usó, dirigió y verificó.
 
 > Proyecto académico. El cliente es un caso de estudio, no una empresa real.
 
@@ -32,7 +49,13 @@ La plataforma consulta una copia propia de los datos. Así no depende de OpenCel
 
 ## 3. Arquitectura
 
-![Arquitectura](docs/arquitectura.png)
+Diagramas generados como código con los íconos oficiales de Azure y Kubernetes ([docs/diagrama/diagrama.py](docs/diagrama/diagrama.py)). Línea continua: funcionando; discontinua: pendiente.
+
+![Arquitectura en Azure](docs/arquitectura.png)
+
+![Arquitectura en Kubernetes](docs/arquitectura-kubernetes.png)
+
+Detalle de componentes y flujos: [docs/01-arquitectura.md](docs/01-arquitectura.md).
 
 | Requisito | Cómo se cumple |
 |---|---|
@@ -68,7 +91,7 @@ La prueba de Azure se lanzó desde GitHub Codespaces hacia la aplicación public
 - **Prueba de falla:** Kubernetes recreó el pod de la API borrado.
 - **Despliegue:** web y API funcionando en Azure, región North Central US.
 
-**Crédito de Azure consumido:** USD 2,61 al 4 de noviembre de 2026 (cifra aproximada; Azure puede tardar en actualizarla).
+**Crédito de Azure consumido:** USD 3,70 al 4 de noviembre de 2026, según Análisis de costos de Azure.
 
 ## 6. Evidencias
 
@@ -82,6 +105,7 @@ La prueba de Azure se lanzó desde GitHub Codespaces hacia la aplicación public
 | Prueba de carga en Azure | [prueba-carga-azure.png](docs/evidencia/prueba-carga-azure.png) |
 | Prueba de carga en Kubernetes | [prueba-carga-k6.png](docs/evidencia/prueba-carga-k6.png) |
 | GitHub Actions | [github-actions.png](docs/evidencia/github-actions.png) |
+| Registro de funcionamiento | [registro-funcionamiento.md](docs/evidencia/registro-funcionamiento.md) |
 
 ## 7. Limitaciones y pendientes
 
