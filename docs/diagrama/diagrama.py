@@ -26,7 +26,7 @@ from diagrams.onprem.vcs import Github
 
 DOCS = Path(__file__).resolve().parent.parent
 
-PENDIENTE = dict(color="#C57A00", style="dashed")
+EVENTOS = dict(color="#C57A00")
 DATOS = dict(color="#2F8F5B")
 DEVOPS = dict(color="#3A1FB0")
 
@@ -39,7 +39,7 @@ nodo = {"fontsize": "13", "fontname": "Helvetica"}
 borde = {"fontsize": "12", "fontname": "Helvetica"}
 
 with Diagram(
-    "Plataforma cloud-native con OpenCellID: arquitectura (línea continua: funcionando · discontinua: pendiente)",
+    "Plataforma cloud-native con OpenCellID: arquitectura en Azure (verde: consultas · naranja: carga diaria · morado: DevOps)",
     filename=str(DOCS / "arquitectura"), outformat="png", show=False, direction="LR",
     graph_attr=grafo, node_attr=nodo, edge_attr=borde,
 ):
@@ -60,12 +60,12 @@ with Diagram(
         with Cluster("Container Apps Environment · cae-cells8mwlpb"):
             web = ContainerApps("ca-web\nNginx + Leaflet\npúblico HTTPS · 0–2")
             api = ContainerApps("ca-api\nFastAPI · interno\n0–3 réplicas")
-            job = ContainerApps("job-ingestor\n(pendiente)")
+            job = ContainerApps("job-ingestor\nContainer Apps Job\n(KEDA, cola)")
 
-        db = DatabaseForPostgresqlServers("PostgreSQL Flexible\nB1ms + PostGIS\n16.214 celdas")
+        db = DatabaseForPostgresqlServers("PostgreSQL Flexible\nB1ms + PostGIS\nunas 16.400 celdas\nactualizadas a diario")
 
         with Cluster("Carga diaria orientada a eventos"):
-            funcion = FunctionApps("Azure Function\ntemporizador 22:00\n(pendiente)")
+            funcion = FunctionApps("Azure Function\ntemporizador\n22:00 Colombia")
             blob = BlobStorage("Blob · raw")
             cola = QueuesStorage("Queue · ingest-jobs")
 
@@ -79,11 +79,11 @@ with Diagram(
     api >> Edge(label="consultas PostGIS · TLS", **DATOS) >> db
 
     # Carga de datos
-    opencellid >> Edge(label="descarga diaria", **PENDIENTE) >> funcion
-    funcion >> Edge(**PENDIENTE) >> blob
-    funcion >> Edge(label="aviso", **PENDIENTE) >> cola
-    cola >> Edge(label="dispara", **PENDIENTE) >> job
-    job >> Edge(label="carga", **PENDIENTE) >> db
+    opencellid >> Edge(label="descarga diaria", **EVENTOS) >> funcion
+    funcion >> Edge(**EVENTOS) >> blob
+    funcion >> Edge(label="aviso", **EVENTOS) >> cola
+    cola >> Edge(label="dispara", **EVENTOS) >> job
+    job >> Edge(label="carga", **EVENTOS) >> db
 
     # Despliegue
     ci >> Edge(label="login OIDC", **DEVOPS) >> identidad

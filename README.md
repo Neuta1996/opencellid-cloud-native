@@ -49,7 +49,7 @@ La plataforma consulta una copia propia de los datos. Así no depende de OpenCel
 
 ## 3. Arquitectura
 
-Diagramas generados como código con los íconos oficiales de Azure y Kubernetes ([docs/diagrama/diagrama.py](docs/diagrama/diagrama.py)). Línea continua: funcionando; discontinua: pendiente.
+Diagramas generados como código con los íconos oficiales de Azure y Kubernetes ([docs/diagrama/diagrama.py](docs/diagrama/diagrama.py)). Todos los componentes están funcionando.
 
 ![Arquitectura en Azure](docs/arquitectura.png)
 
@@ -90,6 +90,7 @@ La prueba de Azure se lanzó desde GitHub Codespaces hacia la aplicación public
 - **Datos cargados:** 16.214 filas, 0 rechazadas.
 - **Prueba de falla:** Kubernetes recreó el pod de la API borrado.
 - **Despliegue:** web y API funcionando en Azure, región North Central US.
+- **Carga diaria automática:** la Azure Function descargó el archivo de Colombia todos los días a las 22:00 desde el 5 de noviembre de 2026. Del 20 al 25 de noviembre, `job-ingestor` hizo 6 cargas seguidas exitosas, de unas 16.400 filas cada una y 0 rechazadas. Detalle en el [registro de funcionamiento](docs/evidencia/registro-funcionamiento.md).
 
 **Crédito de Azure consumido:** USD 3,70 al 4 de noviembre de 2026, según Análisis de costos de Azure.
 
@@ -107,9 +108,10 @@ La prueba de Azure se lanzó desde GitHub Codespaces hacia la aplicación public
 | GitHub Actions | [github-actions.png](docs/evidencia/github-actions.png) |
 | Registro de funcionamiento | [registro-funcionamiento.md](docs/evidencia/registro-funcionamiento.md) |
 
-## 7. Limitaciones y pendientes
+## 7. Limitaciones y mejoras
 
-- La Azure Function y `job-ingestor` están desplegados desde el 4 de noviembre de 2026. Sus ejecuciones quedan en el [registro de funcionamiento](docs/evidencia/registro-funcionamiento.md).
+- El 19 de noviembre de 2026, una carga falló, se reintentó 3 veces y se descartó, como está diseñado. Mientras el mensaje esperaba reintento, KEDA lanzó una ejecución por minuto sin trabajo; se puede mejorar con una cola de mensajes fallidos.
+- Algunos cambios se hicieron a mano en Azure y deben pasarse a Terraform.
 - Los datos de Azure se cargaron una vez, de forma manual, desde GitHub Codespaces.
 - La primera carga de datos se hizo de forma manual desde Codespaces, antes de que existiera el Job.
 - Ajustes hechos directamente en Azure, como el modo del entorno y el acceso interno de la API, deben pasarse a Terraform.

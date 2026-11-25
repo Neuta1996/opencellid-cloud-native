@@ -7,7 +7,7 @@ pip install diagrams      # requiere Graphviz
 python docs/diagrama/diagrama.py
 ```
 
-**Convención:** línea continua = funcionando; línea discontinua naranja = diseñado, pendiente de activar.
+**Colores de las flechas:** verde = consultas de usuarios; naranja = carga diaria de datos; morado = DevOps y despliegue. Todos los componentes están funcionando.
 
 ## 1.1 Vista general en Azure
 
@@ -24,9 +24,9 @@ python docs/diagrama/diagrama.py
 | `ca-web` | Azure Container Apps | Nginx sirve el mapa (Leaflet) y reenvía `/api` a la API. Público por HTTPS. 0–2 réplicas | Funcionando |
 | `ca-api` | Azure Container Apps | API REST en FastAPI. Acceso solo interno. 0–3 réplicas; chequeos `/health` y `/ready` | Funcionando |
 | `psql-cells8mwlpb` | PostgreSQL Flexible Server B1ms | Datos de celdas con PostGIS e índice geográfico. TLS obligatorio | Funcionando |
-| `stcells8mwlpb` | Storage Account | Blob `raw` para el CSV original y cola `ingest-jobs` | Creado |
-| `func-cells8mwlpb` | Azure Functions (Flex Consumption) | Descarga diaria de OpenCellID a las 22:00 de Colombia | Desplegada el 4 de noviembre de 2026 |
-| `job-ingestor` | Container Apps Job | Se dispara por la cola, limpia y carga los datos | Creado; se actualiza en cada `Deploy` |
+| `stcells8mwlpb` | Storage Account | Blob `raw` para el CSV original y cola `ingest-jobs` | Funcionando: un archivo por día |
+| `func-cells8mwlpb` | Azure Functions (Flex Consumption) | Descarga diaria de OpenCellID a las 22:00 de Colombia | Funcionando: ejecución diaria exitosa desde el 5 de noviembre de 2026 |
+| `job-ingestor` | Container Apps Job | Se dispara por la cola, limpia y carga los datos | Funcionando: cargas diarias de unas 16.400 filas, 0 rechazadas |
 | `log-cells8mwlpb`, `appi-cells8mwlpb` | Log Analytics, Application Insights | Registros, métricas y monitoreo | Funcionando |
 | `id-github` | Identidad administrada | Permite a GitHub Actions entrar a Azure por OIDC, sin contraseñas | Funcionando |
 | GHCR | GitHub Container Registry | Imágenes `cells-web`, `cells-api` y `cells-ingestor` | Funcionando |

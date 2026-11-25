@@ -51,9 +51,20 @@ Sin tráfico, web y API escalan a cero; la primera visita puede tardar unos segu
 | Errores | 0,00 % | 0,00 % |
 | Latencia p95 | 76,37 ms | 43,93 ms |
 
-- **Carga de datos:** 16.214 filas, 0 rechazadas.
+- **Carga inicial de datos:** 16.214 filas, 0 rechazadas.
 - **Resiliencia:** se borró un pod de la API y Kubernetes lo recreó sin intervención.
 - **Azure Monitor (`ca-api`, 24 h):** 21,50 ms de respuesta promedio, 1,89 % de CPU, 1 réplica.
+
+### Carga diaria automática
+
+Datos tomados del [registro de funcionamiento](evidencia/registro-funcionamiento.md), generado el 24 de noviembre de 2026.
+
+| Componente | Evidencia | Resultado |
+|---|---|---|
+| Azure Function `daily_download` | Application Insights, 20 ejecuciones del 6 al 25 de noviembre | Todas exitosas, cerca de 1 s cada una |
+| Blob Storage `raw` | Un archivo por día, del 5 al 25 de noviembre | 21 archivos de unos 325 KB |
+| `job-ingestor` | Ejecuciones del 20 al 25 de noviembre | 6 cargas seguidas exitosas, de 16.367 a 16.414 filas y 0 rechazadas |
+| Incidente | 19 de noviembre | La carga falló, se reintentó 3 veces y el mensaje se descartó; el día siguiente cargó con normalidad |
 
 ## 4.5 Evidencias
 
