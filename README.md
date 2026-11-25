@@ -99,6 +99,7 @@ La prueba de Azure se lanzó desde GitHub Codespaces hacia la aplicación public
 | Evidencia | Archivo |
 |---|---|
 | Mapa en Azure | [mapa-azure.png](docs/evidencia/mapa-azure.png) |
+| Botón «Mi ubicación» en celular | [mi-ubicacion.png](docs/evidencia/mi-ubicacion.png) |
 | Mapa en Kubernetes | [mapa-kubernetes.png](docs/evidencia/mapa-kubernetes.png) |
 | Mapa local con Docker | [mapa-local-docker.png](docs/evidencia/mapa-local-docker.png) |
 | Carga de datos | [carga-datos.png](docs/evidencia/carga-datos.png) |

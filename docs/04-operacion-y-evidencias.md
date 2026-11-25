@@ -71,6 +71,7 @@ Datos tomados del [registro de funcionamiento](evidencia/registro-funcionamiento
 | Evidencia | Archivo |
 |---|---|
 | Mapa en Azure | [mapa-azure.png](evidencia/mapa-azure.png) |
+| Botón «Mi ubicación» en celular (±16 m, 200 antenas) | [mi-ubicacion.png](evidencia/mi-ubicacion.png) |
 | Mapa en Kubernetes | [mapa-kubernetes.png](evidencia/mapa-kubernetes.png) |
 | Mapa local con Docker | [mapa-local-docker.png](evidencia/mapa-local-docker.png) |
 | Carga de datos | [carga-datos.png](evidencia/carga-datos.png) |
