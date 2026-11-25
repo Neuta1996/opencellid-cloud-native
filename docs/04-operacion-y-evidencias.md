@@ -38,8 +38,9 @@ Sin tráfico, web y API escalan a cero; la primera visita puede tardar unos segu
 5. Solicitudes por hora en Azure Monitor.
 6. Registros de la API en Log Analytics.
 7. Eventos de arranque y escalado.
-8. Ejecuciones de GitHub Actions.
-9. Estado de Kubernetes.
+8. Ejecuciones de la Azure Function y de `job-ingestor` (carga diaria).
+9. Ejecuciones de GitHub Actions.
+10. Estado de Kubernetes.
 
 ## 4.4 Resultados medidos
 

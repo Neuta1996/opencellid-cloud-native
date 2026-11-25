@@ -62,7 +62,7 @@ Detalle de componentes y flujos: [docs/01-arquitectura.md](docs/01-arquitectura.
 | Microservicios | `web`, `api` e `ingestor` son servicios independientes |
 | Contenedores y orquestación | Docker, Kubernetes y Azure Container Apps |
 | CI/CD | GitHub Actions ejecuta pruebas y publica imágenes |
-| Serverless | Azure Function diseñada para la descarga diaria; web y API escalan a cero |
+| Serverless | Azure Function con temporizador diario y Job disparado por cola; web y API escalan a cero |
 | Resiliencia y escalado | Réplicas, recuperación automática de pods y autoescalado |
 | Seguridad | Secretos fuera del repositorio; la API no tiene acceso público directo |
 
@@ -109,9 +109,9 @@ La prueba de Azure se lanzó desde GitHub Codespaces hacia la aplicación public
 
 ## 7. Limitaciones y pendientes
 
-- La actualización diaria automática aún no está activa en Azure. La Azure Function y `job-ingestor` están pendientes de despliegue.
+- La Azure Function y `job-ingestor` están desplegados desde el 4 de noviembre de 2026. Sus ejecuciones quedan en el [registro de funcionamiento](docs/evidencia/registro-funcionamiento.md).
 - Los datos de Azure se cargaron una vez, de forma manual, desde GitHub Codespaces.
-- El flujo `Deploy` termina con error porque espera `job-ingestor`, aunque la web y la API sí se actualizan.
+- La primera carga de datos se hizo de forma manual desde Codespaces, antes de que existiera el Job.
 - Ajustes hechos directamente en Azure, como el modo del entorno y el acceso interno de la API, deben pasarse a Terraform.
 - Las ubicaciones son estimadas y no representan torres confirmadas.
 - Las descargas incluyen celdas vistas en los últimos 18 meses, y la cobertura depende de la comunidad.

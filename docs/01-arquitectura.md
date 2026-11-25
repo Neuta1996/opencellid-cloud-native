@@ -25,8 +25,8 @@ python docs/diagrama/diagrama.py
 | `ca-api` | Azure Container Apps | API REST en FastAPI. Acceso solo interno. 0–3 réplicas; chequeos `/health` y `/ready` | Funcionando |
 | `psql-cells8mwlpb` | PostgreSQL Flexible Server B1ms | Datos de celdas con PostGIS e índice geográfico. TLS obligatorio | Funcionando |
 | `stcells8mwlpb` | Storage Account | Blob `raw` para el CSV original y cola `ingest-jobs` | Creado |
-| `func-cells8mwlpb` | Azure Functions (Flex Consumption) | Descarga diaria de OpenCellID a las 22:00 de Colombia | Creada; código pendiente de desplegar |
-| `job-ingestor` | Container Apps Job | Se dispara por la cola, limpia y carga los datos | Pendiente de crear |
+| `func-cells8mwlpb` | Azure Functions (Flex Consumption) | Descarga diaria de OpenCellID a las 22:00 de Colombia | Desplegada el 4 de noviembre de 2026 |
+| `job-ingestor` | Container Apps Job | Se dispara por la cola, limpia y carga los datos | Creado; se actualiza en cada `Deploy` |
 | `log-cells8mwlpb`, `appi-cells8mwlpb` | Log Analytics, Application Insights | Registros, métricas y monitoreo | Funcionando |
 | `id-github` | Identidad administrada | Permite a GitHub Actions entrar a Azure por OIDC, sin contraseñas | Funcionando |
 | GHCR | GitHub Container Registry | Imágenes `cells-web`, `cells-api` y `cells-ingestor` | Funcionando |
@@ -43,7 +43,7 @@ python docs/diagrama/diagrama.py
 5. La respuesta incluye las celdas y la atribución de OpenCellID.
 6. El mapa dibuja cada celda como una ubicación estimada.
 
-**Carga diaria (diseñada)**
+**Carga diaria automática**
 
 1. La Azure Function descarga el CSV de Colombia una vez al día.
 2. Lo guarda en Blob Storage y deja un mensaje en la cola.
@@ -51,7 +51,7 @@ python docs/diagrama/diagrama.py
 4. El ingestor valida filas, quita duplicados y hace un *upsert* en una sola transacción.
 5. Si falla, el mensaje vuelve a la cola y se reintenta hasta 3 veces.
 
-Mientras esta parte se activa, los datos se cargaron una vez con el mismo ingestor, ejecutado desde Codespaces.
+La primera carga se hizo de forma manual con el mismo ingestor, ejecutado desde Codespaces, antes de que existiera el Job. Las ejecuciones automáticas quedan en el registro de funcionamiento.
 
 ## 1.5 Principios cloud-native
 

@@ -33,7 +33,8 @@ Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), un asistente d
 | No verificó la memoria del equipo antes de proponer Kubernetes local | El clúster se quedó en `Pending` por falta de memoria | Usar GitHub Codespaces |
 | Usó el usuario con mayúsculas en el nombre de las imágenes | Falló el primer `Deploy` | Pasar el registro a minúsculas |
 | Recomendó una máquina (B2ats_v2) inadecuada para AKS | Habría fallado en AKS | Corregido en la guía: D2s_v5 solo para demostración |
-| No previó que Azure crearía el entorno en modo Express | Azure no permitió crear el Job | Cambiar el entorno a `WorkloadProfiles` |
+| No previó que Azure crearía el entorno en modo Express | Azure no permitió crear el Job | Cambiar el entorno a `WorkloadProfiles` y crear el Job con la CLI |
+| Documentó la carga diaria como pendiente sin revisar el último `Deploy` | La primera versión de la documentación subestimaba lo desplegado | Revisar los registros de GitHub Actions y corregir el estado |
 | La configuración de Nginx usaba HTTP/1.0 | La web recibía error 426 de la API | Agregar `proxy_http_version 1.1` |
 | Supuso el formato antiguo del sujeto OIDC | GitHub no pudo entrar a Azure | Registrar el sujeto real que mostró el error |
 | El primer diagrama no usaba íconos estándar | Observación del profesor | Diagrama como código con los íconos oficiales de Azure y Kubernetes |

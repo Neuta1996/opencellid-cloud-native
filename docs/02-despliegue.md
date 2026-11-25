@@ -61,10 +61,11 @@ Durante el despliegue real hubo que hacer estos cambios a mano. Deben pasarse a 
 
 | Cambio | Motivo | Comando |
 |---|---|---|
-| Entorno de Container Apps a `WorkloadProfiles` | Azure lo creó en modo Express, que no admite Jobs | `az rest --method patch` con `environmentMode: WorkloadProfiles` |
+| Entorno de Container Apps a `WorkloadProfiles` | Azure lo creó en modo Express, que no admite Jobs |
+| Creación de `job-ingestor` | Terraform falló por el modo Express | `az containerapp job create` con disparador `azure-queue` | `az rest --method patch` con `environmentMode: WorkloadProfiles` |
 | `allowInsecure` en `ca-api` | La web llega a la API por HTTP interno | `az containerapp ingress update -n ca-api --allow-insecure true` |
 | Segunda credencial federada | GitHub usa el formato de sujeto con identificadores numéricos | `az identity federated-credential create --name github-main-v2 ...` |
-| Carga inicial de datos | El Job aún no existe | Ingestor ejecutado desde Codespaces contra PostgreSQL |
+| Carga inicial de datos | El Job todavía no existía | Ingestor ejecutado desde Codespaces contra PostgreSQL |
 
 ## 2.5 CI/CD
 
@@ -75,4 +76,4 @@ Durante el despliegue real hubo que hacer estos cambios a mano. Deben pasarse a 
 
 Secretos y variables del repositorio: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `AZURE_FUNCTION_APP` y `AZURE_READY`.
 
-**Estado conocido:** `Deploy` termina en rojo en el paso del Job, porque `job-ingestor` no existe. Los pasos anteriores sí actualizan la web y la API.
+`Deploy` actualiza `ca-web`, `ca-api` y `job-ingestor`, y publica el código de la Azure Function. El 4 de noviembre de 2026 terminó en verde en todos sus pasos, después de crear `job-ingestor`.

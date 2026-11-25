@@ -81,15 +81,30 @@ DESDE=$(date -u -d '-24 hours' +%Y-%m-%dT%H:%M:%SZ)
         "ContainerAppSystemLogs_CL | where TimeGenerated > ago(7d) | top 20 by TimeGenerated desc | project TimeGenerated, ContainerAppName_s, Reason_s"
   fi
 
+  bloque "8a. Ejecuciones de job-ingestor (carga diaria disparada por la cola)" \
+    az containerapp job execution list -g "$RG" -n job-ingestor \
+      --query "[].{Inicio:properties.startTime, Fin:properties.endTime, Estado:properties.status}" -o table
+  if [ -n "$WS" ]; then
+    bloque "8b. Ejecuciones de la Azure Function (Application Insights)" \
+      az monitor log-analytics query -w "$WS" -o table --analytics-query \
+        "AppRequests | where TimeGenerated > ago(30d) | where Name has 'daily_download' | top 20 by TimeGenerated desc | project TimeGenerated, Name, Success, DurationMs"
+    bloque "8c. Mensajes del ingestor (filas cargadas)" \
+      az monitor log-analytics query -w "$WS" -o table --analytics-query \
+        "ContainerAppConsoleLogs_CL | where column_ifexists('ContainerJobName_s', '') == 'job-ingestor' or ContainerAppName_s == 'job-ingestor' | where Log_s has 'cargadas' or Log_s has 'mensajes' or Log_s has 'ERROR' | top 20 by TimeGenerated desc | project TimeGenerated, Log_s"
+  fi
+  bloque "8d. Archivos descargados en Blob Storage" \
+    az storage blob list --account-name stcells8mwlpb --container-name raw --auth-mode key \
+      --query "[].{Archivo:name, Fecha:properties.lastModified, Bytes:properties.contentLength}" -o table
+
   if command -v gh >/dev/null 2>&1; then
-    bloque "8. Ejecuciones de GitHub Actions" gh run list --limit 15
+    bloque "9. Ejecuciones de GitHub Actions" gh run list --limit 15
   fi
 
   if command -v kubectl >/dev/null 2>&1 && kubectl -n cells get pods >/dev/null 2>&1; then
-    bloque "9. Kubernetes en Codespaces" kubectl -n cells get pods,svc,hpa
+    bloque "10. Kubernetes en Codespaces" kubectl -n cells get pods,svc,hpa
   else
     echo
-    echo "## 9. Kubernetes en Codespaces"
+    echo "## 10. Kubernetes en Codespaces"
     echo
     echo "El clúster no estaba activo al generar este registro. Ver docs/evidencia/pods-kubernetes.png."
   fi
