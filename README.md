@@ -39,7 +39,7 @@ La plataforma consulta una copia propia de los datos. Así no depende de OpenCel
 
 - Diseño de una arquitectura de microservicios: web, API e ingestor.
 - API con FastAPI para buscar celdas, listar redes y estimar una ubicación.
-- Mapa web con Leaflet.
+- Mapa web con Leaflet y botón **«Mi ubicación»**: con permiso del navegador, muestra a la persona en el mapa y las celdas a 2 km. La ubicación no se guarda.
 - Carga y limpieza de datos en PostgreSQL con PostGIS.
 - Contenedores con Docker y pruebas locales con Docker Compose.
 - Despliegue en Kubernetes con réplicas, chequeos de salud y autoescalado.

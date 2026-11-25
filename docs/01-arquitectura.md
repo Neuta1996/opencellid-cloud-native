@@ -36,6 +36,8 @@ python docs/diagrama/diagrama.py
 
 **Consulta de un usuario**
 
+La consulta empieza con un clic en el mapa o con el botón **«Mi ubicación»**. El botón usa la geolocalización del navegador, que funciona solo por HTTPS y con permiso del usuario. Dibuja a la persona y el margen de precisión, y centra el mapa. La ubicación solo se envía a la API como coordenadas de búsqueda; no se guarda.
+
 1. El navegador abre `ca-web` por HTTPS.
 2. Al hacer clic en el mapa, la web pide `/api/v1/cells/nearby`.
 3. Nginx reenvía la solicitud a `ca-api` por la red interna, con HTTP/1.1.
