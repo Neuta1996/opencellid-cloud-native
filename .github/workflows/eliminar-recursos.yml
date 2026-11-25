@@ -1,0 +1,50 @@
+name: Eliminar recursos de Azure
+
+# Programado para el 25/11/2026 a las 23:00 (hora de Colombia) = 26/11/2026 04:00 UTC.
+# Elimina el grupo de recursos completo. No se puede deshacer.
+# Para cancelarlo: Actions > "Eliminar recursos de Azure" > ... > Disable workflow.
+on:
+  schedule:
+    - cron: "0 4 26 11 *"
+  workflow_dispatch:
+    inputs:
+      confirmar:
+        description: "Escriba ELIMINAR para borrar rg-opencellid ahora"
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  eliminar:
+    runs-on: ubuntu-latest
+    env:
+      RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+    steps:
+      - name: Verificar fecha o confirmación
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            [ "${{ github.event.inputs.confirmar }}" = "ELIMINAR" ] && echo "ok=true" >> "$GITHUB_OUTPUT" || echo "ok=false" >> "$GITHUB_OUTPUT"
+          elif [ "$(date -u +%Y)" = "2026" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.check.outputs.ok == 'true'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Detener la base de datos
+        if: steps.check.outputs.ok == 'true'
+        continue-on-error: true
+        run: az postgres flexible-server stop -g "$RG" -n psql-cells8mwlpb
+      - name: Eliminar el grupo de recursos
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          az group show -n "$RG" -o table
+          az group delete -n "$RG" --yes --no-wait
+          echo "Eliminación de $RG iniciada. Azure tarda entre 10 y 30 minutos en terminar."
