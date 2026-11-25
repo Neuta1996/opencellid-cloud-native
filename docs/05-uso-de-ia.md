@@ -2,8 +2,6 @@
 
 Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), un asistente de IA. Este documento explica cómo lo usamos, cómo lo dirigimos y cómo verificamos lo que produjo.
 
-> Completen o corrijan las partes marcadas con `[equipo]`: deben reflejar lo que hizo cada integrante.
-
 ## 5.1 Para qué se usó la IA
 
 | Tarea | Aporte de la IA | Trabajo del equipo |
@@ -16,7 +14,14 @@ Este proyecto se desarrolló con apoyo de **Claude** (Anthropic), un asistente d
 | Pruebas | Diseñar las pruebas de carga y de falla | Ejecutarlas y capturar los resultados |
 | Comunicación | Borradores del README, la documentación, el póster, la presentación y los diagramas | Revisarlos, pedir cambios y aprobarlos |
 
-`[equipo]`: indiquen qué integrante hizo cada parte.
+### Roles del equipo
+
+| Rol | Integrante | Responsabilidades |
+|---|---|---|
+| Arquitecto cloud | Duarte | Diseño de la arquitectura, diagramas, Terraform en Azure y control de costos |
+| Desarrollador backend y datos | Rodríguez | API FastAPI, PostgreSQL con PostGIS y carga diaria (Function, Blob, cola y Job con KEDA) |
+| Desarrollador frontend | Garzón | Aplicación web con mapa (Nginx y Leaflet) y botón «Mi ubicación» |
+| DevOps y pruebas | Vásquez | Docker, GHCR, CI/CD con GitHub Actions y OIDC, Kubernetes, k6, Azure Monitor y registro de funcionamiento |
 
 ## 5.2 Cómo dirigimos la IA
 
