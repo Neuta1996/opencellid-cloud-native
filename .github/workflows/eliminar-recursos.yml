@@ -1,11 +1,8 @@
 name: Eliminar recursos de Azure
 
-# Programado para el 25/11/2026 a las 23:00 (hora de Colombia) = 26/11/2026 04:00 UTC.
+# Programación cancelada el 25/11/2026. Solo se ejecuta a mano (Run workflow + ELIMINAR).
 # Elimina el grupo de recursos completo. No se puede deshacer.
-# Para cancelarlo: Actions > "Eliminar recursos de Azure" > ... > Disable workflow.
 on:
-  schedule:
-    - cron: "0 4 26 11 *"
   workflow_dispatch:
     inputs:
       confirmar:
