@@ -1,8 +1,11 @@
 name: Eliminar recursos de Azure
 
-# Programación cancelada el 25/11/2026. Solo se ejecuta a mano (Run workflow + ELIMINAR).
+# Eliminación solicitada el 27/11/2026: se ejecuta al subir este cambio. También a mano (Run workflow + ELIMINAR).
 # Elimina el grupo de recursos completo. No se puede deshacer.
 on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/eliminar-recursos.yml"]
   workflow_dispatch:
     inputs:
       confirmar:
@@ -24,7 +27,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             [ "${{ github.event.inputs.confirmar }}" = "ELIMINAR" ] && echo "ok=true" >> "$GITHUB_OUTPUT" || echo "ok=false" >> "$GITHUB_OUTPUT"
-          elif [ "$(date -u +%Y)" = "2026" ]; then
+          elif [ "${{ github.event_name }}" = "push" ] && [ "$(date -u +%Y-%m)" = "2026-11" ]; then
             echo "ok=true" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"
